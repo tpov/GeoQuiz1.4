@@ -35,9 +35,10 @@ class MainActivity : AppCompatActivity() {
     private var j = 0
 
     //private const val TAG = "QuizViewModel"
-    private val quizViewModel: QuizViewModel by lazy {
-        ViewModelProviders.of(this).get(QuizViewModel::class.java)
-    }
+    //private val quizViewModel: QuizViewModel by lazy {
+      //  ViewModelProviders.of(this).get(QuizViewModel::class.java)
+    //}
+
 
     private var mapAnswer: MutableMap<Int, Boolean> = mutableMapOf(
         0 to true,
@@ -47,6 +48,19 @@ class MainActivity : AppCompatActivity() {
         4 to true,
         5 to true
     )
+
+    //private const val TAG = "QuizViewModel"
+
+        private var currentIndex = 0
+
+        private val questionBank = listOf(
+            Question(R.string.question_australia, true),
+            Question(R.string.question_oceans, true),
+            Question(R.string.question_mideast, false),
+            Question(R.string.question_africa, false),
+            Question(R.string.question_americas, true),
+            Question(R.string.question_asia, true)
+        )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +76,8 @@ class MainActivity : AppCompatActivity() {
         nextButton = findViewById(R.id.next_button)
         prefButton = findViewById(R.id.pref_button)
         questionTextView = findViewById(R.id.question_text_view)
+
+
 
         trueButton.setOnClickListener { view: View ->
             checkBlockMap()
@@ -85,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                 toastNull.show()
                 result(points)
             } else {
-                quizViewModel.moveToNext()
+                moveToNext()
                 updateQuestion()
             }
             checkBlock()
@@ -94,7 +110,7 @@ class MainActivity : AppCompatActivity() {
             if (currentIndex == 0) {
                 Toast.makeText(this, R.string.null_toast, Toast.LENGTH_SHORT).show()
             } else {
-                quizViewModel.moveToPref()
+                moveToPref()
                 updateQuestion()
             }
             checkBlock()
@@ -145,7 +161,7 @@ class MainActivity : AppCompatActivity() {
         toastMeState("OnPostResume")
     }
     override fun onPause() {
-        super.onStart()
+        super.onPause()
         toastMeState("ON_PAUSE")
     }
     override fun onStop() {
@@ -172,7 +188,7 @@ class MainActivity : AppCompatActivity() {
         get() = questionBank[currentIndex].textResId
 
     private fun checkAnswer(userAnswer: Boolean) {
-        val correctAnswer = quizViewModel.currentQuestionAnswer
+        val correctAnswer = currentQuestionAnswer
         val messageResId = if(userAnswer == correctAnswer) {
             points += 1
             R.string.correct_toast
